@@ -1,0 +1,179 @@
+# csg.config.yaml — Config Size Guard v2 Configuration
+# =====================================================
+
+# ── Sensitivity Level ──────────────────────────────────────────────────────
+# strict   : threshold lebih ketat (size 0.7x, lebih sensitif terhadap anomali)
+# normal   : default yang seimbang
+# relaxed  : lebih toleran (cocok untuk tim yang baru adopsi CSG)
+sensitivity: normal
+
+# ── Scan Target ────────────────────────────────────────────────────────────
+paths:
+  - .   # scan dari root repo. Ganti dengan direktori spesifik kalau perlu.
+
+# Ekstensi komprehensif (Mencakup format ML, Cloud, KDL, dan varian Dotfiles)
+extensions:
+  - .yaml
+  - .yml
+  - .json
+  - .json5
+  - .jsonc
+  - .toml
+  - .xml
+  - .ini
+  - .cfg
+  - .conf
+  - .cnf
+  - .env
+  - .properties
+  - .prefs
+  - .plist
+  - .jsonnet
+  - .libsonnet
+  - .cue
+  - .dhall
+  - .hcl
+  - .bicep
+  - .nomad
+  - .hocon
+  - .pbtxt
+  - .prototxt
+  - .kdl
+  - .ron
+  - .kcl
+  - .nickel
+  - .tf
+  - .tfvars
+  - .tfstate
+  - .tfstate.backup
+  - .sam
+  - .kubeconfig
+  - .pipeline
+  - .workflow
+  - .ign
+  - .butane
+  - .bu
+  - .dockerfile
+  - .gitconfig
+  - .gitattributes
+  - .htaccess
+  - .htpasswd
+  - .pem
+  - .crt
+  - .cer
+  - .key
+  - .csr
+  - .ovpn
+  - .csproj
+  - .fsproj
+  - .vbproj
+  - .sln
+  - .props
+  - .targets
+  - .pom
+  - .gradle
+  - .cmake
+  - .make
+  - .mk
+  - .npmrc
+  - .yarnrc
+  - .pnpmfile
+  - .pip
+  - .pypirc
+  - .coveragerc
+  - .gemrc
+  - .ruby-version
+  - .rbenv-version
+  - .php_cs
+  - .php.ini
+  - .cargo
+  - .tool-versions
+  - .rspec
+  - .nvmrc
+  - .lock
+  - .sum
+  - .mod
+  - .resolved
+  - .eslintrc
+  - .prettierrc
+  - .stylelintrc
+  - .babelrc
+  - .browserslistrc
+  - .yamllint
+  - .markdownlint
+  - .rego
+  - .prometheus
+  - .rules
+  - .local
+  - .dev
+  - .development
+  - .prod
+  - .production
+  - .test
+  - .staging
+  - .qa
+  - .uat
+  - .default
+  - .example
+  - .sample
+  - .dist
+  - .template
+  - .tmpl
+  - .tpl
+  - .j2
+  - .jinja
+  - .jinja2
+  - .override
+  - .gotmpl
+  - .bak
+  - .backup
+  - .old
+  - .orig
+  - .ansible
+  - .vault
+  - .sqlconf
+  - .policy
+  - .github
+  - .envrc
+  - .mobileconfig
+  - .wxs
+  - .xcconfig
+  - .pbxproj
+  - .sfdx
+  - .reg
+  - .sys
+  - .cfg.xml
+  - .settings
+  - .project
+  - .classpath
+  - .cproject
+  - .iml
+
+# ── SRE Smart Structural Thresholds ────────────────────────────────────────
+# max_array_length: Batas item maksimal dalam 1 list/array.
+# Mencegah insiden Cloudflare di mana bot merender ribuan rule secara rekursif.
+max_array_length: 1000
+
+# max_key_growth_ratio: Rasio pertumbuhan properti file vs riwayat aslinya.
+max_key_growth_ratio: 2.0
+
+# ── Fallback Thresholds (Data Integrity Guard) ─────────────────────────────
+# Mengamankan pipeline dari log leak atau file terkorupsi (garbage dump).
+fallback_entropy: 5.8
+fallback_string_length: 400
+
+# ── Static Floor Thresholds (Size) ─────────────────────────────────────────
+static_floor:
+  size_warn_kb: 500     # 500 KB: File config wajar, tapi perlu dipantau
+  size_fail_kb: 10240   # 10 MB: Fix terjadi kebocoran memori/data, blokir!
+
+# ── Growth Thresholds (Volumetric Drift) ───────────────────────────────────
+growth_warn_pct:   20      # +20% dari baseline → WARN
+growth_fail_pct:   50      # +50% dari baseline → FAIL
+growth_warn_bytes: 102400  # +100 KB → WARN
+growth_fail_bytes: 512000  # +500 KB → FAIL
+
+# ── Absolute Analyzer (Layer 2 peer + Layer 3 corpus) ──────────────────────
+absolute_min_peer_count: 4    # Min file sama-ekstensi dalam satu scan untuk peer IQR
+absolute_peer_min_bytes: 1024 # Abaikan outlier peer jika file terlalu kecil
+corpus_min_samples: 20       # Min sampel corpus sebelum corpus outlier aktif

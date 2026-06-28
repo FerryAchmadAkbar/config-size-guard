@@ -1,0 +1,42 @@
+name: DevSecOps Config Size Guard (CSG)
+
+# Pipeline ini akan berjalan otomatis setiap ada Push ke branch 'main' 
+# atau setiap ada Pull Request baru yang mengarah ke 'main'.
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security-scan:
+    name: Run CSG Anomaly Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Penting untuk mendeteksi 'git rename' di git_tracker.py
+
+      - name: 🐍 Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip' # Mempercepat pipeline dengan caching
+
+      - name: 📦 Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Jika Anda menggunakan pyproject.toml, aktifkan baris di bawah ini:
+          # pip install -e .
+
+      - name: 🛡️ Run CSG Lapis 2 (Heuristic & IQR)
+        env:
+          PYTHONPATH: src
+        run: |
+          echo "[*] Memulai pemindaian keamanan pada konfigurasi..."
+          # Kita scan seluruh root direktori ('.')
+          python -m csg.cli check --paths . --verbose
+

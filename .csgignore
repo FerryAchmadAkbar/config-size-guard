@@ -1,0 +1,5 @@
+vendor/**
+*.lock
+.venv/**
+node_modules/**
+.github/**

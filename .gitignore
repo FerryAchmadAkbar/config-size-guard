@@ -1,0 +1,14 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+.pytest_cache/
+*.log
+csg-report.json
+.csg-baseline.json
+.csg-repo-stats.json
+.csg-corpus.json
+tests/growth_simulation_repo/
+csg_dev_audit.log
