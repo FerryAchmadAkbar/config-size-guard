@@ -1,17 +1,9 @@
-# csg.config.yaml — Config Size Guard v2 Configuration
-# =====================================================
 
-# ── Sensitivity Level ──────────────────────────────────────────────────────
-# strict   : threshold lebih ketat (size 0.7x, lebih sensitif terhadap anomali)
-# normal   : default yang seimbang
-# relaxed  : lebih toleran (cocok untuk tim yang baru adopsi CSG)
 sensitivity: normal
 
-# ── Scan Target ────────────────────────────────────────────────────────────
 paths:
-  - .   # scan dari root repo. Ganti dengan direktori spesifik kalau perlu.
+  - .
 
-# Ekstensi komprehensif (Mencakup format ML, Cloud, KDL, dan varian Dotfiles)
 extensions:
   - .yaml
   - .yml
@@ -149,31 +141,22 @@ extensions:
   - .cproject
   - .iml
 
-# ── SRE Smart Structural Thresholds ────────────────────────────────────────
-# max_array_length: Batas item maksimal dalam 1 list/array.
-# Mencegah insiden Cloudflare di mana bot merender ribuan rule secara rekursif.
 max_array_length: 1000
 
-# max_key_growth_ratio: Rasio pertumbuhan properti file vs riwayat aslinya.
 max_key_growth_ratio: 2.0
 
-# ── Fallback Thresholds (Data Integrity Guard) ─────────────────────────────
-# Mengamankan pipeline dari log leak atau file terkorupsi (garbage dump).
 fallback_entropy: 5.8
 fallback_string_length: 400
 
-# ── Static Floor Thresholds (Size) ─────────────────────────────────────────
 static_floor:
-  size_warn_kb: 500     # 500 KB: File config wajar, tapi perlu dipantau
-  size_fail_kb: 10240   # 10 MB: Fix terjadi kebocoran memori/data, blokir!
+  size_warn_kb: 500
+  size_fail_kb: 10240
 
-# ── Growth Thresholds (Volumetric Drift) ───────────────────────────────────
-growth_warn_pct:   20      # +20% dari baseline → WARN
-growth_fail_pct:   50      # +50% dari baseline → FAIL
-growth_warn_bytes: 102400  # +100 KB → WARN
-growth_fail_bytes: 512000  # +500 KB → FAIL
+growth_warn_pct:   20
+growth_fail_pct:   50
+growth_warn_bytes: 102400
+growth_fail_bytes: 512000
 
-# ── Absolute Analyzer (Layer 2 peer + Layer 3 corpus) ──────────────────────
-absolute_min_peer_count: 4    # Min file sama-ekstensi dalam satu scan untuk peer IQR
-absolute_peer_min_bytes: 1024 # Abaikan outlier peer jika file terlalu kecil
-corpus_min_samples: 20       # Min sampel corpus sebelum corpus outlier aktif
+absolute_min_peer_count: 4
+absolute_peer_min_bytes: 1024
+corpus_min_samples: 20
